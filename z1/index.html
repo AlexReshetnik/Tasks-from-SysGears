@@ -1,0 +1,39 @@
+<script>
+        let convert
+        fetch("db.json").then((response) => response.json())
+            .then((result) => {
+                let end = false;
+                let last = ""
+                convert = (input) => {
+                    for (let item of result.units[input.distance.unit]["one in"]) {
+                        if (end) return
+
+                        let key = Object.keys(item)[0]
+                        let val = item[key]
+
+                        if (last.split(key).length > 2) return;
+
+                        let clone = structuredClone(input)
+                        last += clone.distance.unit + " "
+                        clone.distance.unit = key
+                        clone.distance.value *= val
+
+                        if (clone.distance.unit != clone.convert_to) {
+                            convert(clone)
+                        }
+                        else {
+                            clone.distance.value = clone.distance.value.toFixed(2)
+                            console.log(JSON.stringify(structuredClone(clone.distance)));
+                            end = true
+                        }
+
+
+                    }
+                }
+            })
+
+/*            
+convert({ "distance": { "unit": "m", "value": 0.5 }, "convert_to": "ft" })
+
+*/
+</script>

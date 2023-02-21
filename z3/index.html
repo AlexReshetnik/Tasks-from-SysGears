@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+
+    let out = {
+        rezult: {
+            random_point: { x: rand_num(), y: rand_num(), z: rand_num() },
+            search_points: [],
+            calls: 0//значення зазвичай в межах [44 -> 48]
+        }
+    }
+
+    var point = { x: 0, y: 0, z: 0 }
+
+    point.x = binary_search('x')
+    point.y = binary_search('y')
+    point.z = binary_search('z')
+
+    console.log(JSON.stringify(out));
+    
+    if (dbp(out.rezult.random_point) == 0) {
+        console.log("Відстань між невідомою точкою і нашою = 0, отже ми добились бажаного результату");
+    }
+    function rand_num() {
+        return Math.round(Math.random() * 100)
+    }
+
+    //distance_between_points -> dbp
+    function dbp({ x = 0, y = 0, z = 0 }) {
+        out.rezult.search_points.push({ x, y, z })
+        out.rezult.calls++
+        return (
+            ((out.rezult.random_point.x - x) ** 2) +
+            ((out.rezult.random_point.y - y) ** 2) +
+            ((out.rezult.random_point.z - z) ** 2)
+        ) ** 0.5
+    }
+
+    function binary_search(axis) {
+        let min = -1
+        let max = 100
+        let val, past_len, cur_len
+
+        while (true) {
+            val = Math.round((min + max) / 2)
+            cur_len = dbp({ [axis]: val })
+            past_len = dbp({ [axis]: val + 1 })
+
+            if (max - min == 1) return val
+
+            if (cur_len < past_len) {
+                max = val
+            } else if (cur_len > past_len) {
+                min = val
+            }
+        }
+    }
+
+
+</script>
+
+</html>
